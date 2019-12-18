@@ -1,4 +1,4 @@
-.csv
-.vscode
+*.csv
+*.vscode
 app.config
-.exe
+*.exe
