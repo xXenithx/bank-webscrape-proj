@@ -37,6 +37,8 @@ def enable_download_in_headless_chrome(driver, download_dir):
 
     params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': download_dir }}
     command_result = driver.execute("send_command", params)
+    print('[Info]')
+    print(command_result)
 
 def grab_site(driver, username, password):
     wait = WebDriverWait(driver, 15)

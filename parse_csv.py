@@ -15,7 +15,7 @@ def add_vendors_to_database(vendors):
     
         with connection:
             cur = connection.cursor()
-            cur.execute("CREATE TABLE Vendors(Guid TEXT, Vendor TEXT)")
+            cur.execute("CREATE TABLE Vendors(Guid TEXT, Name TEXT)")
             add_vendors_to_database(vendors)
 
     else:
@@ -24,22 +24,29 @@ def add_vendors_to_database(vendors):
 
         with connection:
             for vend in vendors:
-                data = (str(uuid.uuid4()), vend)
-            
-                print('\nInserting Vendor %s with uuid of %s\n' % (data[1],data[0]))
 
-                cur.execute("INSERT INTO Vendors VALUES(?,?)", (data))
-                connection.commit()
+                #Check for existing vendor in database
+                cur.execute("""SELECT Name FROM Vendors WHERE Name=?""", [vend])
+                result = cur.fetchone()
+                if result:
+                    print('Vendor %s already exists in table! Skipping.' % vend)
+                else:
+                    data = (str(uuid.uuid4()), vend)
+            
+                    print('\nInserting Vendor %s with uuid of %s\n' % (data[1],data[0]))
+
+                    cur.execute("INSERT INTO Vendors VALUES(?,?)", (data))
+                    connection.commit()
     
     connection.close()
         
         
 
 lines = list()
-with open('Export.csv', 'rb') as readFile:
+with open('Export.csv', 'rt') as readFile:
     data = list(csv.reader(readFile))
 
-with open('Bank_statement_cleaned.csv', 'wb') as writeFile:
+with open('Bank_statement_cleaned.csv', 'wt') as writeFile:
     writer = csv.writer(writeFile)
     for row in data:
         if not data.index(row) < 3:
